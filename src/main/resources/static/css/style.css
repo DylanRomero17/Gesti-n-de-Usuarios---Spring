@@ -1,0 +1,60 @@
+body {
+        background-color: black; /* Color de fondo claro */
+    }
+    .container-fluid {
+        background-color: #ffffff; /* Fondo blanco para el contenedor de la tabla */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 3px 3px 10px rgba(255, 255, 255, 0.9); /* Sombra suave para dar profundidad */
+    }
+.navbar {
+  padding: 0 10px;
+}
+
+.btn-delete{
+    font-size:11px;
+    color: red;
+}
+
+.btn-edit{
+    font-size:11px;
+    color: #5dade2;
+}
+
+*.icon-dark {
+  color: grey;
+}
+
+.message {
+  position: absolute;
+  top: 40px;
+  right:5px;
+}
+
+.search {
+  position: relative;
+}
+
+.search input {
+  text-indent: 25px;
+  border: 2px solid #d6d4d4;
+}
+
+.search input:focus {
+  box-shadow: none;
+  border: 1px solid grey;
+}
+
+.search .fa-search {
+  position: absolute;
+  top: 12px;
+  left: 10px;
+}
+
+.search button {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 80px;
+  background: #884ea0;
+}

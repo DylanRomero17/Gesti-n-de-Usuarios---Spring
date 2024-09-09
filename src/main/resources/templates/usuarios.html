@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0" />
+        <title>Adea Sistema de Usuarios</title>
+
+        <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+        <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+              integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+              crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    </head>
+
+    <body>
+        <div th:replace="fragments/header :: header"></div>
+
+        <div class="container-fluid" style="max-width: 900px; margin: 0 auto;">
+            <h2 class="text-center">Usuarios</h2>
+            
+            <form th:action="@{/adea/usuarios}" method="get" id="statusForm">
+                <div class='d-flex justify-content-lg-around mt-3'>
+                    <button type="button" class="btn btn-lg btn-success" onclick="setStatusAndSubmit('A')">Activos</button>
+                    <button type="button" class="btn btn-lg btn-secondary" onclick="setStatusAndSubmit('B')">Inactivos</button>
+                    <button type="button" class="btn btn-lg btn-warning" onclick="setStatusAndSubmit('R')">Revocados</button>
+                    <input id="status" type="hidden" name="status" >
+                </div>
+            </form>            
+
+            <div th:if="${message != null}" class="alert alert-success alert-dismissible fade show text-center message"
+                 role="alert">
+                [[${message}]]
+                <button type="button" class="close btn-sm" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+<div class="my-3 row">
+    <div class="col-md-5">
+        <form th:action="@{/adea/usuarios}">
+            <div class="row">
+                <div class="col-md-12 mt-2">
+                    <div class="search">
+                        <i class="fa fa-search"></i>
+                        <input id="keyword" type="search" name="keyword" th:value="${keyword}" required class="form-control" placeholder="Enter keyword" style="width: 100%;">
+                        <button type="submit" class="btn btn-info">Buscar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-7 d-flex justify-content-end">
+        <form th:action="@{/adea/usuarios}">
+            <div class="row">
+                <div class="col-md-6 mt-2">
+                    <label class="text-info">Fecha Alta Inicial</label>
+                    <div class="search">
+                        <i class="fa fa-search"></i>
+                        <input id="fechaInicio" type="date" name="fechaInicio" th:value="${fechaInicio}" required class="form-control" style="width: 90%;">
+                    </div>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label class="text-info">Fecha Alta Final</label>
+                    <div class="search">
+                        <i class="fa fa-search"></i>
+                        <input id="fechaFin" type="date" name="fechaFin" th:value="${fechaFin}" required class="form-control" style="width: 90%;">
+                    </div>
+                </div>
+                <div class="col-md-12 mt-2">
+                    <button type="submit" class="btn btn-info w-100">Buscar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+            
+            <div class="mt-2 mb-3 d-flex justify-content-center">
+                <button id="btnClear" class="btn btn-info"><i class="fa fa-eraser"></i> Limpiar Busquedas</button>
+            </div>
+
+            <div >
+                <table class="table table-hover table-responsive-xl table-dark table-striped table-bordered">
+                    <thead class="theader">
+                        <tr>
+                            <th scope="col">NOMBRE</th>
+                            <th scope="col">LOGIN</th>
+                            <th scope="col">FECHA ALTA</th>
+                            <th scope="col">ESTATUS</th>
+                            <th scope="col">ACCIÓN</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="usuario : ${usuarios}">
+                            <th scope="row" th:text="${usuario.nombre}"></th>
+                            <td th:text="${usuario.login}"></td>
+                            <td th:text="${usuario.fechaAlta}"></td>
+                            <td th:text="${usuario.status}"></td>
+                            <td >
+                                <a th:href="@{'/adea/usuarios/' + ${usuario.login}}" title="Editar usuario"
+                                   class="fa-regular fa-pen-to-square btn-edit" >Editar</a>
+                                <a th:href="@{'/adea/usuarios/delete/' + ${usuario.login}}" th:usuarioTitle="${usuario.nombre}" id="btnDelete"
+                                   title="Eliminar usuario" class="fa-regular fa-trash-can  btn-delete " >Eliminar</a>
+                            </td>
+
+                    <div class="modal fade text-center" id="confirmModal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Confirmación de eliminación</h5>
+                                    <button type="button" class="close" data-dismiss="modal">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <span id="confirmText"></span>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <a type="button" id="yesBtn" class="btn btn-danger">Si</a>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${#lists.isEmpty(usuarios)}">
+    <span>No se encontraron usuarios!</span>
+</div>
+        </div>
+
+        <div th:replace="fragments/footer :: footer"></div>
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $(".btn-delete").on("click", function (e) {
+                    e.preventDefault();
+                    link = $(this);
+
+                    usuarioTitle = link.attr("usuarioTitle");
+                    $("#yesBtn").attr("href", link.attr("href"));
+                    $("#confirmText").html("Estas seguro de querer eliminar este usuario \<strong\>" + usuarioTitle +
+                            "\<\/strong\>?");
+                    $("#confirmModal").modal();
+                });
+
+                $("#btnClear").on("click", function (e) {
+                    e.preventDefault();
+                    $("#keyword").text("");
+                    window.location = "[[@{/adea/usuarios}]]";
+                });
+            });
+            
+            function setStatusAndSubmit(status) {
+            document.getElementById('status').value = status;
+            document.getElementById('statusForm').submit();
+        }
+        </script>
+
+    </body>
+</html>
