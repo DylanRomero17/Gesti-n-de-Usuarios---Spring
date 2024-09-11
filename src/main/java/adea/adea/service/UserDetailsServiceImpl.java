@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package adea.adea.service;
 
 import adea.adea.entity.SecurityUser;
@@ -27,10 +23,6 @@ public class UserDetailsServiceImpl implements UserDetailsService{
             throw new UsernameNotFoundException("Login no encontrado");
         }
         
-        if (usuario.getFechaVigencia() != null && usuario.getFechaVigencia().before(new Date())) {
-            throw new UsernameNotFoundException("La vigencia del usuario ha expirado");
-        }
-
         return new SecurityUser(usuario);
     }
     

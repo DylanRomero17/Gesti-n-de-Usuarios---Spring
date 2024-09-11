@@ -2,6 +2,7 @@ package adea.adea.entity;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,7 +31,7 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return usuario.getFechaVigencia() == null || usuario.getFechaVigencia().after(new Date());
     }
 
     @Override
