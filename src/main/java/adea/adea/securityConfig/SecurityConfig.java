@@ -18,9 +18,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.antMatchers("/adea/**").authenticated()
+                .authorizeHttpRequests(auth -> auth
+                        .antMatchers("/", "/adea/registro", "/login", "/adea/registrar", "/registrar").permitAll()
+                        .antMatchers("/adea/**").authenticated()
                 )
                 .formLogin(form -> form
+                       .loginPage("/adea/login").permitAll()
                 .defaultSuccessUrl("/adea", true)
                 )
                 .build();                

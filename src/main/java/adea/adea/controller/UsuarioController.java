@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -41,6 +42,19 @@ public class UsuarioController {
     @GetMapping("/")
     public String home() {
         return "adea"; 
+    }
+    
+        @GetMapping("/login")
+    public String login() {
+        return "login"; // Retorna el nombre del archivo login.html
+    }
+    
+        @GetMapping("/registro")
+    public String registerUserAccount(Model model) {
+        Usuario usuario = new Usuario();
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("pageTitle", "Nuevo Usuario");
+        return "registro";  
     }
 
     @GetMapping("/usuarios")
@@ -147,5 +161,23 @@ public class UsuarioController {
         }
         return "redirect:/adea/usuarios";
     }    
+    
+    @PostMapping("/registrar")
+    public String registrarUsuario( Usuario usuario, RedirectAttributes redirectAttributes) {
+        try {
+            String encryptedPassword = passwordEncoder.encode(usuario.getPassword());
+            usuario.setPassword(encryptedPassword);
+            usuario.setFechaAlta(new Date());
+            usuario.setStatus('A');
+            usuario.setCliente(0.0F);
+            usuario.setIntentos(0.0F);
+            usuario.setFechaModificacion(new Date());
+            usuarioRepository.save(usuario);
+            redirectAttributes.addFlashAttribute("message", "Usuario registrado exitosamente");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+        }
+        return "redirect:/adea/login";
+    }
 
 }
